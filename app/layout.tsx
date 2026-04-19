@@ -8,15 +8,26 @@ export const metadata = {
 
 function TopBar() {
   return (
-    <header className="topbar">
-      <Link href="/" className="logo">CrediMate</Link>
-      <nav className="nav-links">
-        <Link href="#" className="nav-link">Explore Products</Link>
-        <Link href="#" className="nav-link">Grab Deals</Link>
-        <Link href="#" className="nav-link">Make Payments</Link>
-        <Link href="/chat" className="nav-link">AI Support</Link>
-      </nav>
-      <Link href="#" className="login-btn">Login</Link>
+    <header>
+      <div className="top-strip">
+        <div className="container">
+          <span>Personal | Business | Corporate | NRI | Agri</span>
+          <span>Support | Lodge a Complaint | About Us</span>
+        </div>
+      </div>
+      <div className="main-nav">
+        <Link href="/" className="logo">CrediMate</Link>
+        <nav className="nav-links">
+          <Link href="/explore" className="nav-link">Explore Products</Link>
+          <Link href="/deals" className="nav-link">Grab Deals</Link>
+          <Link href="/payments" className="nav-link">Make Payments</Link>
+          <Link href="/chat" className="nav-link">AI Support</Link>
+        </nav>
+        <div className="nav-actions">
+           <Link href="#" className="open-account-btn">Open Account</Link>
+           <Link href="#" className="login-btn">Login</Link>
+        </div>
+      </div>
     </header>
   )
 }
