@@ -1,0 +1,17 @@
+{
+  "name": "CrediMate Banking",
+  "short_name": "CrediMate",
+  "description": "Professional AI-Powered Banking Assistant",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#97144D",
+  "theme_color": "#97144D",
+  "icons": [
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
