@@ -2,7 +2,7 @@
     "name": "credimate",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "next dev -p 3001 --webpack",
         "build": "next build",
         "vercel-build": "next build"
     },

@@ -6,8 +6,13 @@ export const metadata = {
   title: 'CrediMate | Professional AI Banking Platform',
   description: 'Experience premium banking with AI-powered loan assistance and smart financial management.',
   manifest: '/manifest.json',
+}
+
+export const viewport = {
   themeColor: '#97144D',
-  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
 }
 
 function TopBar() {
