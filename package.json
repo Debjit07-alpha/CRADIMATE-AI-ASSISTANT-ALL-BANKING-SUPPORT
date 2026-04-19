@@ -12,11 +12,17 @@
         "jspdf": "^4.2.1",
         "next": "latest",
         "react": "latest",
-        "react-dom": "latest"
+        "react-dom": "latest",
+        "@ducanh2912/next-pwa": "latest",
+        "framer-motion": "latest",
+        "lucide-react": "latest",
+        "clsx": "latest",
+        "tailwind-merge": "latest"
     },
     "devDependencies": {
-        "@types/node": "^25.6.0",
-        "@types/react": "^19.2.14",
-        "typescript": "^6.0.3"
+        "@types/node": "^24.0.0",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "typescript": "^5.0.0"
     }
 }

@@ -1,9 +1,13 @@
 import './globals.css'
 import Link from 'next/link'
+import { Landmark, Briefcase, Tag, CreditCard, MessageSquare, User, LogIn } from 'lucide-react'
 
 export const metadata = {
-  title: 'CrediMate | Personal Loans, Home Loans & More',
-  description: 'Apply for instant loans with CrediMate.',
+  title: 'CrediMate | Professional AI Banking Platform',
+  description: 'Experience premium banking with AI-powered loan assistance and smart financial management.',
+  manifest: '/manifest.json',
+  themeColor: '#97144D',
+  viewport: 'width=device-width, initial-scale=1, maximum-scale=1',
 }
 
 function TopBar() {
@@ -11,21 +15,36 @@ function TopBar() {
     <header>
       <div className="top-strip">
         <div className="container">
-          <span>Personal | Business | Corporate | NRI | Agri</span>
-          <span>Support | Lodge a Complaint | About Us</span>
+          <div className="top-left">
+            <span>Personal</span>
+            <span>Business</span>
+            <span>Corporate</span>
+            <span>NRI</span>
+          </div>
+          <div className="top-right">
+            <span>Support</span>
+            <span>About Us</span>
+          </div>
         </div>
       </div>
       <div className="main-nav">
-        <Link href="/" className="logo">CrediMate</Link>
+        <Link href="/" className="logo">
+           <Landmark size={28} className="logo-icon" />
+           <span>CrediMate</span>
+        </Link>
         <nav className="nav-links">
-          <Link href="/explore" className="nav-link">Explore Products</Link>
-          <Link href="/deals" className="nav-link">Grab Deals</Link>
-          <Link href="/payments" className="nav-link">Make Payments</Link>
-          <Link href="/chat" className="nav-link">AI Support</Link>
+          <Link href="/explore" className="nav-link"><Briefcase size={16} /> Explore</Link>
+          <Link href="/deals" className="nav-link"><Tag size={16} /> Deals</Link>
+          <Link href="/payments" className="nav-link"><CreditCard size={16} /> Payments</Link>
+          <Link href="/chat" className="nav-link"><MessageSquare size={16} /> AI Assistant</Link>
         </nav>
         <div className="nav-actions">
-           <Link href="#" className="open-account-btn">Open Account</Link>
-           <Link href="#" className="login-btn">Login</Link>
+           <Link href="#" className="open-account-btn">
+             <User size={16} /> Open Account
+           </Link>
+           <Link href="#" className="login-btn">
+             <LogIn size={16} /> Login
+           </Link>
         </div>
       </div>
     </header>
