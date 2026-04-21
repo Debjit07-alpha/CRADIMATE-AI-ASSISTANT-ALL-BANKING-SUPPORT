@@ -3,84 +3,110 @@ import { jsPDF } from 'jspdf';
 export function generateSanctionLetter(name: string, amount: number) {
   const doc = new jsPDF();
   
-  // Header
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(22);
-  doc.setTextColor(99, 102, 241); // Primary Color
-  doc.text('CrediMate', 105, 20, { align: 'center' });
+  // Brand Header
+  doc.setFillColor(151, 20, 77); // CrediMate Burgundy
+  doc.rect(0, 0, 210, 40, 'F');
   
-  doc.setFontSize(14);
-  doc.setTextColor(100, 100, 100);
-  doc.text('Smart Loan Approvals', 105, 28, { align: 'center' });
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(28);
+  doc.setTextColor(255, 255, 255);
+  doc.text('CrediMate', 20, 25);
+  
+  doc.setFontSize(10);
+  doc.setFont('helvetica', 'normal');
+  doc.text('OFFICIAL LOAN SANCTION DOCUMENT', 20, 32);
+  
+  // Sanction Details Header
+  doc.setTextColor(0, 0, 0);
+  doc.setFontSize(18);
+  doc.setFont('helvetica', 'bold');
+  doc.text('LOAN SANCTION LETTER', 105, 55, { align: 'center' });
   
   // Divider
   doc.setLineWidth(0.5);
-  doc.setDrawColor(200, 200, 200);
-  doc.line(20, 35, 190, 35);
+  doc.setDrawColor(151, 20, 77);
+  doc.line(20, 60, 190, 60);
   
-  // Title
-  doc.setFont('helvetica', 'bold');
-  doc.setFontSize(18);
-  doc.setTextColor(0, 0, 0);
-  doc.text('LOAN SANCTION LETTER', 105, 50, { align: 'center' });
-  
-  // Date and Reference
+  // Meta Info
+  doc.setFontSize(10);
   doc.setFont('helvetica', 'normal');
-  doc.setFontSize(11);
-  const date = new Date().toLocaleDateString();
-  const ref = `REF: CM-${Math.floor(Math.random() * 1000000)}`;
-  doc.text(`Date: ${date}`, 20, 65);
-  doc.text(ref, 150, 65);
+  const date = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  const ref = `REF NO: CM/LN/${Math.floor(Math.random() * 1000000).toString().padStart(7, '0')}`;
+  doc.text(`Date of Issue: ${date}`, 20, 70);
+  doc.text(ref, 150, 70);
   
   // Salutation
-  doc.text(`Dear ${name},`, 20, 85);
+  doc.setFontSize(11);
+  doc.text(`To,`, 20, 85);
+  doc.setFont('helvetica', 'bold');
+  doc.text(`${name.toUpperCase()}`, 20, 90);
   
-  // Body text
-  const bodyText = `We are pleased to inform you that your personal loan application has been carefully reviewed by our automated underwriting agents. We are delighted to officially communicate that your loan has been APPROVED.`;
+  // Main Body
+  doc.setFont('helvetica', 'normal');
+  const bodyText = `Subject: Approval of Personal Loan Application\n\nDear ${name},\n\nWe are pleased to inform you that your personal loan application has been successfully processed through our AI-driven underwriting system. Based on your financial profile and credit assessment, we have approved your loan request.`;
   
   const splitText = doc.splitTextToSize(bodyText, 170);
-  doc.text(splitText, 20, 95);
+  doc.text(splitText, 20, 105);
   
-  // Loan Details Box
-  doc.setFillColor(245, 245, 245);
-  doc.roundedRect(20, 115, 170, 50, 3, 3, 'F');
+  // Details Table Background
+  doc.setFillColor(248, 250, 252);
+  doc.roundedRect(20, 135, 170, 60, 4, 4, 'F');
+  doc.setDrawColor(226, 232, 240);
+  doc.roundedRect(20, 135, 170, 60, 4, 4, 'D');
   
   doc.setFont('helvetica', 'bold');
-  doc.text('Approved Loan Details:', 25, 125);
+  doc.text('LOAN SUMMARY', 30, 145);
   
   doc.setFont('helvetica', 'normal');
-  doc.text(`Applicant Name:`, 25, 135);
-  doc.text(name, 80, 135);
-  
-  doc.text(`Sanctioned Amount:`, 25, 145);
+  doc.text('Sanctioned Amount:', 30, 155);
   doc.setFont('helvetica', 'bold');
-  doc.text(`$${amount.toLocaleString()}`, 80, 145);
+  doc.text(`INR ${amount.toLocaleString('en-IN')}`, 90, 155);
   
   doc.setFont('helvetica', 'normal');
-  doc.text(`Interest Rate:`, 25, 155);
-  doc.text(`8.5% p.a. (Fixed)`, 80, 155);
+  doc.text('Interest Rate:', 30, 165);
+  doc.text('10.49% p.a. (Fixed Rate)', 90, 165);
   
-  // Terms
+  doc.text('Processing Fee:', 30, 175);
+  doc.text('NIL (Promotional Offer)', 90, 175);
+  
+  doc.text('Repayment Type:', 30, 185);
+  doc.text('Equated Monthly Installments (EMI)', 90, 185);
+  
+  // Conditions
   doc.setFont('helvetica', 'bold');
-  doc.text('Terms and Conditions:', 20, 185);
+  doc.text('Important Terms & Conditions:', 20, 210);
   doc.setFont('helvetica', 'normal');
+  doc.setFontSize(9);
   const terms = [
-    '1. This sanction is valid for 30 days from the date of issue.',
-    '2. The loan disbursement is subject to final KYC verification.',
-    '3. Repayment will be via monthly EMIs calculated at the stated interest rate.'
+    '• This sanction is valid for 15 days from the date of issue.',
+    '• Final disbursement is subject to successful e-KYC and document verification.',
+    '• CrediMate reserves the right to withdraw this offer if any discrepancies are found.',
+    '• Prepayment charges are applicable as per the standard bank policy.'
   ];
-  doc.text(terms, 20, 195);
+  doc.text(terms, 20, 220);
   
-  // Signatures
-  doc.text('Authorized Signatory', 20, 250);
-  doc.setFont('helvetica', 'italic');
-  doc.setTextColor(150, 150, 150);
-  doc.text('Digitally signed by CrediMate AI Underwriting', 20, 260);
+  // Signature Area
+  doc.setFontSize(11);
+  doc.setFont('helvetica', 'bold');
+  doc.text('Digitally Authorized By', 20, 255);
+  doc.text('CrediMate AI Underwriting System', 20, 262);
+  
+  // QR Code Placeholder or Seal
+  doc.setDrawColor(151, 20, 77);
+  doc.setLineWidth(1);
+  doc.circle(170, 255, 15, 'D');
+  doc.setFontSize(8);
+  doc.text('CM SEAL', 162, 256);
   
   // Footer
-  doc.setFontSize(9);
-  doc.text('CrediMate Financial Services | 123 Tech Lane, Innovation City, 94016', 105, 285, { align: 'center' });
+  doc.setFillColor(241, 245, 249);
+  doc.rect(0, 280, 210, 17, 'F');
+  doc.setFontSize(8);
+  doc.setTextColor(100, 116, 139);
+  doc.text('CrediMate Bank Ltd. | Corporate Office: Financial District, BKC, Mumbai - 400051', 105, 288, { align: 'center' });
+  doc.text('This is a computer-generated document and does not require a physical signature.', 105, 293, { align: 'center' });
   
   // Save PDF
-  doc.save(`${name.replace(/\s+/g, '_')}_Sanction_Letter.pdf`);
+  const safeName = (name || 'Applicant').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+  doc.save(`CrediMate_Sanction_${safeName}.pdf`);
 }
