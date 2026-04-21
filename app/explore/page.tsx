@@ -108,13 +108,33 @@ export default function ExplorePage() {
   const loanProducts: Product[] = [
     {
       title: 'Home Loan',
-      image: '/images/loans.png',
-      description: 'Own your dream home with interest rates starting at 8.5% and zero processing fees.',
+      image: '/images/loans/home loan.jpg',
+      description: 'Own your dream home with interest rates starting at 8.75% and zero processing fees.',
     },
     {
       title: 'Personal Loan',
-      image: '/images/personal_loan.png',
+      image: '/images/loans/personal-loan.webp',
       description: 'Quick collateral-free loans up to ₹40 Lakhs with instant approval for your personal needs.',
+    },
+    {
+      title: 'Business Loan',
+      image: '/images/loans/Business-Loan.jpg',
+      description: 'Fuel your business growth with customized credit solutions and flexible repayment tenures.',
+    },
+    {
+      title: 'Car Loan',
+      image: '/images/loans/car loan.jpg',
+      description: 'Get behind the wheel of your dream car with up to 100% on-road financing.',
+    },
+    {
+      title: 'Education Loan',
+      image: '/images/loans/_Education-Loan.jpg',
+      description: 'Invest in your future with comprehensive coverage for domestic and international studies.',
+    },
+    {
+      title: 'Credit Card Loan',
+      image: '/images/loans/credit card loan.jpg',
+      description: 'Instant liquidity against your credit card limit with no extra documentation.',
     }
   ]
 
@@ -324,9 +344,9 @@ export default function ExplorePage() {
         }
 
         .products-grid {
-          flex: 1.5;
+          flex: 2;
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
           gap: 2rem;
         }
 
