@@ -2,7 +2,7 @@
     "name": "credimate",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "node node_modules/next/dist/bin/next dev",
         "build": "next build",
         "vercel-build": "next build"
     },
