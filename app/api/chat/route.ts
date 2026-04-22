@@ -13,6 +13,11 @@ You possess advanced banking capabilities. Always maintain a professional, secur
 
 Be concise but highly intelligent. Structure responses with bullet points if helpful.`
 
+interface Message {
+  role: 'user' | 'ai';
+  text: string;
+}
+
 export async function POST(req: Request) {
   try {
     const { history, message } = await req.json()
@@ -29,14 +34,23 @@ export async function POST(req: Request) {
     })
 
     // Format history for Gemini SDK
-    const formattedHistory = history.map((msg: any) => ({
+    const formattedHistory = history.map((msg: Message) => ({
       role: msg.role === 'ai' ? 'model' : 'user',
       parts: [{ text: msg.text }]
     }))
 
     const chat = model.startChat({ history: formattedHistory })
     const result = await chat.sendMessage(message)
-    const reply = result.response.text()
+    
+    let reply = 'I am sorry, I am having trouble processing that request right now.'
+    try {
+      reply = result.response.text()
+    } catch (e) {
+      console.error("Gemini Response Text Error:", e)
+      if (result.response.candidates?.[0]?.finishReason === 'SAFETY') {
+        reply = 'I cannot answer that as it violates my safety guidelines. Please ask something else.'
+      }
+    }
 
     return NextResponse.json({ reply })
   } catch (error: any) {

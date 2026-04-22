@@ -1,5 +1,6 @@
 import './globals.css'
 import Link from 'next/link'
+import React, { ReactNode } from 'react'
 import { Landmark, Briefcase, Tag, CreditCard, MessageSquare, User, LogIn } from 'lucide-react'
 
 export const metadata = {
@@ -59,7 +60,7 @@ function TopBar() {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="en">

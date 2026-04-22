@@ -2,27 +2,25 @@
     "name": "credimate",
     "private": true,
     "scripts": {
-        "dev": "next dev -p 3001 --webpack",
-        "build": "next build --webpack",
-        "vercel-build": "next build --webpack"
+        "dev": "node node_modules/next/dist/bin/next dev",
+        "build": "next build",
+        "vercel-build": "next build"
     },
     "dependencies": {
-        "@google/generative-ai": "latest",
-        "@supabase/supabase-js": "latest",
-        "jspdf": "^4.2.1",
-        "next": "latest",
-        "react": "latest",
-        "react-dom": "latest",
-        "@ducanh2912/next-pwa": "latest",
+        "next": "14.2.30",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
+        "@supabase/supabase-js": "^2.50.0",
+        "@google/generative-ai": "^0.21.0",
+        "jspdf": "^2.5.1",
         "framer-motion": "latest",
         "lucide-react": "latest",
         "clsx": "latest",
         "tailwind-merge": "latest"
     },
     "devDependencies": {
-        "@types/node": "^24.0.0",
-        "@types/react": "^19.0.0",
-        "@types/react-dom": "^19.0.0",
-        "typescript": "^5.0.0"
+        "typescript": "5.6.3",
+        "@types/react": "18.3.12",
+        "@types/node": "22.7.7"
     }
 }

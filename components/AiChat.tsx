@@ -1,24 +1,48 @@
 'use client'
 import { useState, useRef, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  Send, 
+  Mic, 
+  Menu, 
+  X, 
+  Minus, 
+  Maximize2, 
+  User, 
+  Bot, 
+  ChevronRight,
+  ShieldCheck,
+  Zap,
+  Clock,
+  Sparkles
+} from 'lucide-react'
+
+interface Message {
+  role: 'user' | 'ai';
+  text: string;
+}
+
+interface QuickService {
+  icon: string;
+  label: string;
+}
 
 export default function AiChat() {
   const [started, setStarted] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
-  const [messages, setMessages] = useState<{role: 'user' | 'ai', text: string}[]>([])
+  const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [showWelcome, setShowWelcome] = useState(true)
 
-  const quickServices = [
+  const quickServices: QuickService[] = [
     { icon: '🏦', label: 'Account' },
     { icon: '💳', label: 'Cards' },
-    { icon: '📄', label: 'Open Fixed Deposit' },
-    { icon: '👆', label: 'Apply For Product' },
-    { icon: '📋', label: 'Retail Loan Services' },
-    { icon: '🛍️', label: 'Merchant Servicing' },
+    { icon: '📄', label: 'Fixed Deposit' },
+    { icon: '📋', label: 'Loan Services' },
     { icon: '📈', label: 'Investments' },
-    { icon: '💻', label: 'API Support' },
-    { icon: '🏢', label: 'Corporate Banking' },
+    { icon: '🏢', label: 'Corporate' },
   ]
 
   const scrollToBottom = () => {
@@ -37,13 +61,11 @@ export default function AiChat() {
     setLoading(true)
 
     try {
-      const historyPayload = messages; // Send all previous messages
-      
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          history: historyPayload, 
+          history: messages, 
           message: text 
         })
       })
@@ -57,450 +79,308 @@ export default function AiChat() {
   }
 
   return (
-    <div className="aha-chat-widget">
-      {/* Header */}
-      <div className="aha-header">
-        <div className="aha-logo">
-          <strong>MATE!</strong>
+    <div className="chat-widget-premium">
+      <div className="chat-header">
+        <div className="header-left">
+          <div className="ai-status">
+            <div className="status-dot"></div>
+            <span>Online</span>
+          </div>
+          <div className="header-logo">
+            <strong>CREDI</strong>MATE!
+          </div>
         </div>
-        <div className="aha-header-actions">
-          <span>➖</span>
-          <span>✖️</span>
+        <div className="header-actions">
+          <button className="action-btn"><Minus size={16} /></button>
+          <button className="action-btn"><Maximize2 size={16} /></button>
+          <button className="action-btn close-btn"><X size={16} /></button>
         </div>
       </div>
 
-      <div className="aha-body">
-        {/* Background Pattern Overlay */}
-        <div className="aha-bg-pattern"></div>
-
-        {!started ? (
-          /* Get Started Screen */
-          <div className="aha-get-started">
-            <div className="aha-welcome-logo">
-              <div className="logo-bubble">
-                <h2>MATE!</h2>
-                <p>CREDIMATE</p>
+      <div className="chat-body-container">
+        <AnimatePresence mode="wait">
+          {!started ? (
+            <motion.div 
+              key="welcome"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="welcome-screen"
+            >
+              <div className="welcome-content">
+                <div className="big-logo-bubble">
+                  <Bot size={48} />
+                </div>
+                <h1>Hello!</h1>
+                <h2>Welcome to CrediMate <span>Concierge</span></h2>
+                <p>I am your AI banking assistant, ready to help you with anything from loans to investments.</p>
               </div>
-            </div>
-            <div className="aha-welcome-text">
-              <h1>Hi</h1>
-              <h2>Get Started with CrediMate AI, your CrediMate Anytime Assistant!</h2>
-              <p>Happy to help you. Just ask & I'll reply in a jiffy</p>
-            </div>
-            
-            <div className="aha-terms-box">
-              <label className="aha-checkbox">
-                <input 
-                  type="checkbox" 
-                  checked={termsAccepted} 
-                  onChange={(e) => setTermsAccepted(e.target.checked)} 
-                />
-                <span>I have read, understood and accepted all the <a href="#">Terms & Conditions</a></span>
-              </label>
               
-              <div className="aha-start-actions">
+              <div className="welcome-footer">
+                <label className="custom-checkbox">
+                  <input 
+                    type="checkbox" 
+                    checked={termsAccepted} 
+                    onChange={(e) => setTermsAccepted(e.target.checked)} 
+                  />
+                  <span className="checkmark"></span>
+                  <span className="label-text">I accept the <a href="#">Terms & Conditions</a></span>
+                </label>
+                
                 <button 
-                  className={`aha-btn ${termsAccepted ? 'active' : 'disabled'}`}
+                  className={`start-btn ${termsAccepted ? 'active' : ''}`}
                   disabled={!termsAccepted}
                   onClick={() => setStarted(true)}
                 >
-                  Get Started!
+                  Start Conversation <ChevronRight size={18} />
                 </button>
-                <div className="aha-lang-toggle">
-                  <span className="active">EN</span>
-                  <span>हिं</span>
-                </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          /* Chat Screen */
-          <div className="aha-chat-area">
-            <div className="aha-chat-messages">
-              {/* Initial Greeting */}
-              <div className="aha-msg ai-msg greeting-msg">
-                <div className="logo-bubble small">
-                  <h2>MATE!</h2>
-                  <p>CREDIMATE</p>
-                </div>
-                <div className="greeting-text">
-                  <h3>Hi, Welcome To CrediMate!</h3>
-                  <p>I'm CrediMate AI, your personal banking assistant</p>
-                </div>
-              </div>
-
-              {messages.length === 0 && (
-                <div className="aha-services-container">
-                  <p className="services-prompt">Do you want help with any of these services?</p>
-                  <div className="aha-chips">
-                    {quickServices.map((service, idx) => (
-                      <button 
-                        key={idx} 
-                        className="aha-chip"
-                        onClick={() => handleSend(`I need help with ${service.label}`)}
-                      >
-                        <span className="chip-icon">{service.icon}</span> {service.label}
-                      </button>
-                    ))}
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="chat"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="chat-interface"
+            >
+              <div className="message-area">
+                <div className="message ai-message greeting">
+                  <div className="bot-avatar"><Bot size={20} /></div>
+                  <div className="msg-content">
+                    <h3>Welcome back!</h3>
+                    <p>How can I assist your financial journey today?</p>
                   </div>
+                </div>
 
-                  {/* Promo Banner */}
-                  <div className="aha-promo-banner">
-                    <div className="promo-text">
-                      <h3>12 EMIs off* with<br/>Home Loans</h3>
-                      <p>at attractive rates of interest</p>
-                      <button className="promo-btn">Apply Now</button>
+                {messages.length === 0 && (
+                  <div className="quick-services">
+                    <p>Popular Services:</p>
+                    <div className="service-chips">
+                      {quickServices.map((service, i) => (
+                        <button key={i} onClick={() => handleSend(`Tell me about ${service.label}`)}>
+                          {service.icon} {service.label}
+                        </button>
+                      ))}
                     </div>
-                    <div className="promo-image">🏠👨‍🦰</div>
                   </div>
-                </div>
-              )}
+                )}
 
-              {/* Dynamic Messages */}
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`aha-msg ${msg.role === 'user' ? 'user-msg' : 'ai-msg'}`}>
-                  {msg.role === 'ai' && (
-                    <div className="logo-bubble tiny">
-                      <b>MATE</b>
+                {messages.map((msg, i) => (
+                  <div key={i} className={`message ${msg.role === 'user' ? 'user-message' : 'ai-message'}`}>
+                    {msg.role === 'ai' && <div className="bot-avatar"><Bot size={20} /></div>}
+                    <div className="msg-bubble">
+                      {msg.text}
                     </div>
-                  )}
-                  <div className={`msg-bubble ${msg.role}`}>
-                    {msg.text}
                   </div>
-                </div>
-              ))}
-              
-              {loading && (
-                <div className="aha-msg ai-msg">
-                   <div className="logo-bubble tiny"><b>MATE</b></div>
-                   <div className="msg-bubble ai"><span className="spinner"></span></div>
-                </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+                ))}
+                
+                {loading && (
+                  <div className="message ai-message">
+                    <div className="bot-avatar"><Bot size={20} /></div>
+                    <div className="msg-bubble loading">
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                      <span className="dot"></span>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
 
-            {/* Input Area */}
-            <div className="aha-input-area">
-              <button className="icon-btn">🍔</button>
-              <div className="input-wrapper">
-                <input 
-                  type="text" 
-                  placeholder="How may I help you?" 
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
-                  disabled={loading}
-                />
-                <button className="icon-btn mic-btn">🎤</button>
+              <div className="input-footer">
+                <div className="input-container">
+                  <button className="utility-btn"><Menu size={20} /></button>
+                  <input 
+                    type="text" 
+                    placeholder="Type your message..." 
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSend(input)}
+                    disabled={loading}
+                  />
+                  <button 
+                    className={`send-btn ${input.trim() ? 'active' : ''}`}
+                    onClick={() => handleSend(input)}
+                    disabled={!input.trim() || loading}
+                  >
+                    <Send size={20} />
+                  </button>
+                </div>
               </div>
-              <div className="aha-lang-toggle small">
-                <span className="active">EN</span>
-                <span>हिं</span>
-              </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <style jsx>{`
-        .aha-chat-widget {
+        .chat-widget-premium {
           width: 100%;
-          max-width: 450px;
+          background: white;
+          border-radius: 24px;
+          box-shadow: 0 30px 60px rgba(0,0,0,0.1);
           height: 700px;
-          background: #ffffff;
-          border-radius: 12px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.15);
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          font-family: 'Lato', sans-serif;
+          border: 1px solid rgba(0,0,0,0.05);
           position: relative;
         }
 
-        .aha-header {
-          background: #97144D;
+        .chat-header {
+          background: var(--primary-burgundy);
           color: white;
-          padding: 12px 20px;
+          padding: 1.5rem 2rem;
           display: flex;
           justify-content: space-between;
           align-items: center;
           z-index: 10;
         }
 
-        .aha-logo strong {
-          background: white;
-          color: #97144D;
-          padding: 4px 8px;
-          border-radius: 4px;
+        .header-left {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+
+        .ai-status {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          font-size: 0.7rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          opacity: 0.8;
+        }
+        .status-dot { width: 6px; height: 6px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981; }
+
+        .header-logo {
           font-size: 1.2rem;
-          font-weight: 900;
+          font-weight: 300;
+          letter-spacing: -0.5px;
         }
+        .header-logo strong { font-weight: 900; }
 
-        .aha-header-actions span {
-          margin-left: 15px;
-          cursor: pointer;
-          font-size: 14px;
-        }
-
-        .aha-body {
-          flex: 1;
-          position: relative;
-          display: flex;
-          flex-direction: column;
-          background: #fdfdfd;
-        }
-
-        .aha-bg-pattern {
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
-          background-size: 20px 20px;
-          opacity: 0.5;
-          pointer-events: none;
-          z-index: 0;
-        }
-
-        /* Get Started Screen */
-        .aha-get-started {
-          position: absolute;
-          top: 0; left: 0; right: 0; bottom: 0;
-          background: linear-gradient(to bottom right, rgba(255,255,255,0.9), rgba(245,245,245,0.95));
-          z-index: 5;
-          display: flex;
-          flex-direction: column;
-        }
-
-        .aha-welcome-logo {
-          padding: 30px 20px 10px;
-        }
-
-        .logo-bubble {
-          background: #C41E64;
+        .header-actions { display: flex; gap: 0.5rem; }
+        .action-btn {
+          background: rgba(255,255,255,0.1);
+          border: none;
           color: white;
-          display: inline-flex;
-          flex-direction: column;
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          display: flex;
           align-items: center;
           justify-content: center;
-          padding: 15px 20px;
-          border-radius: 12px;
-          border-bottom-right-radius: 0;
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-
-        .logo-bubble h2 { margin: 0; font-size: 1.8rem; font-weight: 900; }
-        .logo-bubble p { margin: 0; font-size: 0.6rem; letter-spacing: 1px; }
-
-        .logo-bubble.small { padding: 10px 15px; }
-        .logo-bubble.small h2 { font-size: 1.2rem; }
-        
-        .logo-bubble.tiny { padding: 5px; border-radius: 8px; border-bottom-right-radius: 0; }
-        .logo-bubble.tiny b { font-size: 0.8rem; }
-
-        .aha-welcome-text {
-          padding: 0 20px;
-          flex: 1;
-        }
-        
-        .aha-welcome-text h1 { font-size: 2rem; color: #333; margin-bottom: 5px; }
-        .aha-welcome-text h2 { font-size: 1.4rem; color: #333; margin-bottom: 15px; line-height: 1.4; }
-        .aha-welcome-text p { color: #666; font-size: 1rem; }
-
-        .aha-terms-box {
-          background: white;
-          padding: 20px;
-          border-top: 1px solid #eee;
-        }
-
-        .aha-checkbox {
-          display: flex;
-          align-items: flex-start;
-          gap: 10px;
-          font-size: 0.9rem;
-          color: #333;
-          margin-bottom: 20px;
-          cursor: pointer;
-        }
-        .aha-checkbox a { color: #C41E64; text-decoration: none; }
-
-        .aha-start-actions {
-          display: flex;
-          gap: 15px;
-          align-items: stretch;
-        }
-
-        .aha-btn {
-          flex: 1;
-          padding: 15px;
-          border: none;
-          border-radius: 8px;
-          font-size: 1.1rem;
-          font-weight: 700;
-          color: white;
-          transition: 0.3s;
-        }
-        .aha-btn.disabled { background: #b0b0b0; cursor: not-allowed; }
-        .aha-btn.active { background: #97144D; cursor: pointer; }
-
-        .aha-lang-toggle {
-          display: flex;
-          background: #f0f0f0;
-          border-radius: 8px;
-          overflow: hidden;
-        }
-        .aha-lang-toggle span {
-          padding: 0 15px;
-          display: flex;
-          align-items: center;
-          font-weight: 700;
-          color: #666;
-          cursor: pointer;
-        }
-        .aha-lang-toggle span.active { background: #C41E64; color: white; }
-
-        /* Chat Area */
-        .aha-chat-area {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          z-index: 2;
-          height: 100%;
-        }
-
-        .aha-chat-messages {
-          flex: 1;
-          padding: 20px;
-          overflow-y: auto;
-          display: flex;
-          flex-direction: column;
-          gap: 15px;
-        }
-
-        .greeting-msg {
-          display: flex;
-          gap: 15px;
-          align-items: flex-start;
-          margin-bottom: 20px;
-        }
-
-        .greeting-text h3 { color: #333; margin-bottom: 5px; font-size: 1.2rem; }
-        .greeting-text p { color: #666; font-size: 0.95rem; }
-
-        .aha-services-container {
-          background: #f5f5f5;
-          border-radius: 12px;
-          padding: 15px;
-          margin-bottom: 20px;
-        }
-
-        .services-prompt {
-          font-weight: 600;
-          color: #333;
-          margin-bottom: 15px;
-        }
-
-        .aha-chips {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
-
-        .aha-chip {
-          background: white;
-          border: 1px solid #ddd;
-          padding: 8px 15px;
-          border-radius: 20px;
-          font-size: 0.85rem;
-          color: #333;
           cursor: pointer;
           transition: 0.2s;
-          display: flex;
-          align-items: center;
-          gap: 5px;
         }
-        .aha-chip:hover { border-color: #97144D; color: #97144D; }
+        .action-btn:hover { background: rgba(255,255,255,0.2); }
 
-        .aha-promo-banner {
-          background: #fef0ea;
-          border-radius: 12px;
+        .chat-body-container { flex: 1; position: relative; background: #fdfdfd; }
+
+        /* Welcome Screen */
+        .welcome-screen {
+          padding: 3rem 2rem;
+          height: 100%;
           display: flex;
-          overflow: hidden;
-        }
-        .promo-text { padding: 20px; flex: 1; }
-        .promo-text h3 { color: #333; font-size: 1.1rem; margin-bottom: 5px; }
-        .promo-text p { color: #666; font-size: 0.85rem; margin-bottom: 15px; }
-        .promo-btn {
-          background: #97144D;
-          color: white;
-          border: none;
-          padding: 8px 15px;
-          border-radius: 6px;
-          font-weight: 700;
-          cursor: pointer;
-        }
-        .promo-image {
-          width: 100px;
-          background: #c4f0d4;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 3rem;
+          flex-direction: column;
+          justify-content: space-between;
+          text-align: center;
         }
 
-        .aha-msg {
-          display: flex;
-          gap: 10px;
-          max-width: 90%;
+        .big-logo-bubble {
+          width: 100px; height: 100px; background: var(--primary-burgundy);
+          color: white; border-radius: 30px; display: flex; align-items: center;
+          justify-content: center; margin: 0 auto 2rem; box-shadow: 0 20px 40px rgba(151, 20, 77, 0.2);
         }
-        .aha-msg.user-msg { align-self: flex-end; flex-direction: row-reverse; }
-        
+
+        .welcome-content h1 { font-size: 2.5rem; color: #333; margin-bottom: 0.5rem; }
+        .welcome-content h2 { font-size: 1.5rem; color: #666; font-weight: 300; }
+        .welcome-content h2 span { color: var(--primary-burgundy); font-weight: 800; }
+        .welcome-content p { color: #888; margin-top: 1.5rem; line-height: 1.6; }
+
+        .welcome-footer { display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .custom-checkbox {
+          display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 0.9rem; color: #666; justify-content: center;
+        }
+        .custom-checkbox input { display: none; }
+        .checkmark { width: 20px; height: 20px; border: 2px solid #ddd; border-radius: 6px; position: relative; }
+        .custom-checkbox input:checked + .checkmark { background: var(--primary-burgundy); border-color: var(--primary-burgundy); }
+        .custom-checkbox input:checked + .checkmark:after {
+          content: ""; position: absolute; left: 6px; top: 2px; width: 5px; height: 10px;
+          border: solid white; border-width: 0 2px 2px 0; transform: rotate(45deg);
+        }
+
+        .start-btn {
+          background: #f1f5f9; color: #94a3b8; border: none; padding: 1.2rem;
+          border-radius: 16px; font-weight: 800; font-size: 1rem; display: flex;
+          align-items: center; justify-content: center; gap: 0.5rem; transition: 0.3s;
+        }
+        .start-btn.active { background: var(--primary-burgundy); color: white; cursor: pointer; }
+        .start-btn.active:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(151, 20, 77, 0.2); }
+
+        /* Chat Interface */
+        .chat-interface { height: 100%; display: flex; flex-direction: column; }
+        .message-area { flex: 1; padding: 2rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; }
+
+        .message { display: flex; gap: 1rem; max-width: 85%; }
+        .ai-message { align-self: flex-start; }
+        .user-message { align-self: flex-end; flex-direction: row-reverse; }
+
+        .bot-avatar {
+          width: 36px; height: 36px; background: #fdf2f7; color: var(--primary-burgundy);
+          border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+
         .msg-bubble {
-          padding: 12px 16px;
-          border-radius: 12px;
-          font-size: 0.95rem;
-          line-height: 1.4;
+          padding: 1rem 1.25rem; border-radius: 18px; font-size: 0.95rem; line-height: 1.5;
         }
-        .msg-bubble.user { background: #f0f0f0; color: #333; border-bottom-right-radius: 0; }
-        .msg-bubble.ai { background: white; color: #333; border: 1px solid #eee; border-top-left-radius: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .ai-message .msg-bubble { background: white; color: #333; border: 1px solid #f1f5f9; border-top-left-radius: 2px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .user-message .msg-bubble { background: var(--primary-burgundy); color: white; border-top-right-radius: 2px; }
 
-        /* Input Area */
-        .aha-input-area {
-          padding: 15px;
-          background: white;
-          border-top: 1px solid #eee;
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
+        .greeting .msg-content h3 { font-size: 1.1rem; color: #333; margin-bottom: 0.25rem; }
+        .greeting .msg-content p { color: #666; font-size: 0.9rem; }
 
-        .icon-btn {
-          background: none;
-          border: none;
-          font-size: 1.2rem;
-          cursor: pointer;
-          color: #666;
+        .quick-services { background: #f8fafc; padding: 1.5rem; border-radius: 20px; border: 1px dashed #e2e8f0; }
+        .quick-services p { font-size: 0.8rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; margin-bottom: 1rem; }
+        .service-chips { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+        .service-chips button {
+          background: white; border: 1px solid #e2e8f0; padding: 0.6rem 1rem;
+          border-radius: 12px; font-size: 0.85rem; font-weight: 600; color: #475569;
+          cursor: pointer; transition: 0.2s;
         }
+        .service-chips button:hover { border-color: var(--primary-burgundy); color: var(--primary-burgundy); }
 
-        .input-wrapper {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          background: #f9f9f9;
-          border: 1px solid #ddd;
-          border-radius: 20px;
-          padding: 5px 15px;
+        .input-footer { padding: 1.5rem; background: white; border-top: 1px solid #f1f5f9; }
+        .input-container {
+          background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px;
+          padding: 0.5rem; display: flex; align-items: center; gap: 0.5rem;
         }
-        .input-wrapper input {
-          flex: 1;
-          border: none;
-          background: transparent;
-          padding: 8px 0;
-          font-size: 0.95rem;
-          outline: none;
+        .input-container input {
+          flex: 1; border: none; background: transparent; padding: 0.5rem;
+          font-size: 0.95rem; outline: none; color: #333;
         }
-        .mic-btn { color: #97144D; }
+        .utility-btn, .send-btn {
+          width: 40px; height: 40px; border-radius: 12px; border: none;
+          display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;
+        }
+        .utility-btn { background: transparent; color: #94a3b8; }
+        .send-btn { background: #f1f5f9; color: #cbd5e1; }
+        .send-btn.active { background: var(--primary-burgundy); color: white; }
 
-        .aha-lang-toggle.small span { padding: 0 8px; font-size: 0.8rem; border-radius: 4px; }
+        .loading { display: flex; gap: 4px; padding: 1.2rem !important; }
+        .loading .dot { width: 6px; height: 6px; background: #cbd5e1; border-radius: 50%; animation: bounce 1.4s infinite ease-in-out both; }
+        .loading .dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1.0); } }
+
+        @media (max-width: 600px) {
+          .chat-widget-premium { height: 600px; }
+          .welcome-content h1 { font-size: 2rem; }
+        }
       `}</style>
     </div>
   )
